@@ -1,0 +1,84 @@
+:root {
+  --neon-pink: #ff2ced;
+  --neon-blue: #05d9e8;
+  --neon-purple: #d300c5;
+  --bg-dark: #111;
+  --bg-darker: #0a0a0a;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--neon-blue);
+  font-family: 'Orbitron', sans-serif;
+  overflow: hidden;
+}
+
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs {
+  display: flex;
+  background-color: var(--bg-darker);
+  padding: 10px;
+  gap: 10px;
+  border-bottom: 2px solid var(--neon-purple);
+}
+
+.tab {
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 1px solid var(--neon-pink);
+  color: var(--neon-pink);
+  cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  transition: all 0.3s;
+}
+
+.tab:hover,
+.tab.active {
+  background-color: var(--neon-pink);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--neon-pink);
+}
+
+.content {
+  flex: 1;
+  padding: 10px;
+}
+
+#web-view {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-darker);
+}
+
+.hidden {
+  display: none;
+}
+
+#files-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  gap: 10px;
+  padding: 10px;
+}
+
+.file-item {
+  background-color: var(--bg-darker);
+  border: 1px solid var(--neon-blue);
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.file-item:hover {
+  background-color: var(--neon-blue);
+  color: var(--bg-dark);
+}
