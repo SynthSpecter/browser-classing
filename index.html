@@ -4,30 +4,46 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Browser-Classing</title>
+   <title>Browser Classing 📁</title>
    <link rel="stylesheet" href="styles/main.css">
+   <link rel="stylesheet" href="styles/file-explorer.css">
    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap"
       rel="stylesheet">
 </head>
 
 <body>
    <div class="app-container">
-      <!-- Barre d'onglets -->
-      <div class="tabs">
-         <div class="tab active" data-url="https://www.google.com">Web</div>
-         <div class="tab" data-url="file:///">Fichiers</div>
+      <header class="app-header">
+         <h1>📁 BROWSER CLASSING</h1>
+         <p class="subtitle">Un explorateur de fichiers local avec style synthwave</p>
+         <p class="subtitle-en">A local file explorer with synthwave style</p>
+      </header>
+
+      <div class="file-explorer">
+         <div class="path-bar">
+            <button id="back-btn" class="neon-button">← Retour / Back</button>
+            <span id="current-path" class="path-text">Chemin actuel: / Current path: </span>
+         </div>
+
+         <div id="file-list" class="file-list">
+            <!-- Les fichiers/dossiers seront affichés ici -->
+         </div>
       </div>
 
-      <!-- Zone de contenu -->
-      <div class="content">
-         <iframe id="web-view" src="https://www.google.com" frameborder="0"></iframe>
-         <div id="file-explorer" class="hidden">
-            <button id="open-folder">Ouvrir un dossier</button>
-            <div id="files-list"></div>
+      <div id="file-viewer" class="file-viewer hidden">
+         <div class="viewer-header">
+            <span id="viewer-title" class="viewer-title"></span>
+            <button id="close-viewer-btn" class="neon-button">✕ Fermer / Close</button>
+         </div>
+         <div id="file-content" class="file-content">
+            <!-- Le contenu du fichier sera affiché ici -->
          </div>
       </div>
    </div>
-   <script src="scripts/main.js"></script>
+
+   <script src="scripts/file-renderer.js"></script>
+   <script src="scripts/file-explorer.js"></script>
+   <script src="scripts/app.js"></script>
 </body>
 
 </html>
