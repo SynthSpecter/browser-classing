@@ -12,9 +12,9 @@
 **Browser Classing** est un **explorateur de fichiers local** développé en **HTML5, CSS et JavaScript**, avec une **interface synthwave**.
 
 - **Navigation locale** : Parcourez vos dossiers et fichiers directement depuis votre navigateur.
+- **Backend Node.js** : Utilise un serveur local pour une compatibilité tous navigateurs.
 - **Style rétro** : Couleurs néon, polices synthwave, ambiance 80s/90s.
 - **Affichage des fichiers** : Ouvrez et visualisez le contenu des fichiers texte (et bientôt les images).
-- **Pas de backend requis** : Utilise l'API **File System Access** pour accéder aux fichiers locaux.
 
 ### **English**
 
@@ -30,11 +30,11 @@
 ## **✨ Fonctionnalités / Features**
 
 | Fonctionnalité                      | Feature                                                                        |
-| ----------------------------------- | ------------------------------------------------------------------------------ |
+| ----------------------------------- | ------------------------------------------------------------------------------ | --- |
 | ✅ **Navigation locale**            | Parcourez vos dossiers/fichiers locaux. / Browse your local files and folders. |
 | ✅ **Style synthwave**              | Interface rétro avec couleurs néon. / Retro interface with neon colors.        |
 | ✅ **Affichage des fichiers texte** | Ouvrez et lisez les fichiers texte. / Open and read text files.                |
-| ✅ **Pas de backend**               | Utilise l'API File System Access. / Uses the File System Access API.           |
+| ✅ **Backend Node.js**              | Compatible avec tous les navigateurs. / Compatible with all browsers.          |     |
 | 🚧 **Affichage des images**         | À venir. / Coming soon.                                                        |
 
 ---
@@ -46,18 +46,22 @@
 1. Clonez le dépôt :
    git clone https://github.com/SynthSpecter/browser-classing.git
 
-2. Ouvrez index.html dans Chrome ou Edge (ces navigateurs supportent l'API File System Access).
+2. Installez les dépendances et lancez le serveur :
+   npm install
+   npm start
 
-3. Cliquez sur "Sélectionner un dossier" pour commencer à naviguer.
+3. Ouvrez http://localhost:3000 dans n'importe quel navigateur (Chrome, Firefox, Safari, etc.).
 
 ### **English**
 
 1. Clone the repository :
    git clone https://github.com/SynthSpecter/browser-classing.git
 
-2. Open index.html in Chrome or Edge (these browsers support the File System Access API).
+2. Install dependancies and start the server :
+   npm install
+   npm start
 
-3. Click "Select a folder" to start browsing.
+3. Open http://localhost:3000 in any browser (Chrome, Firefox, Safari, etc.).
 
 ## **🤝 Contribuer / Contribute**
 

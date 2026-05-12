@@ -1,12 +1,10 @@
 /**
  * Classe FileExplorer
- * @class
- * @description Gère la navigation dans les fichiers/dossiers locaux.
+ * Gère la navigation dans les fichiers/dossiers via le backend.
  */
 class FileExplorer {
   constructor() {
-    this.currentDirectory = null
-    this.currentPath = []
+    this.currentPath = '/' // Chemin racine par défaut (sera mis à jour par le backend)
     this.fileListElement = document.getElementById('file-list')
     this.currentPathElement = document.getElementById('current-path')
 
@@ -20,113 +18,109 @@ class FileExplorer {
         document.getElementById('file-viewer').classList.add('hidden')
       })
 
-    // Démarre avec le répertoire racine
-    this.listFiles()
+    // Charge le dossier racine au démarrage
+    this.listFiles('.')
   }
 
   /**
    * Liste les fichiers/dossiers du répertoire actuel.
+   * @param {string} path - Chemin du dossier à lister.
    */
-  async listFiles() {
+  async listFiles(path) {
     try {
-      // Utilise l'API File System Access pour sélectionner un dossier
-      if (!this.currentDirectory) {
-        this.currentDirectory = await window.showDirectoryPicker()
-        this.currentPath = []
+      const response = await fetch(
+        `/api/files?path=${encodeURIComponent(path)}`,
+      )
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`)
       }
+      const files = await response.json()
 
       this.fileListElement.innerHTML = ''
+      this.currentPath = path
       this.updatePathDisplay()
 
-      // Liste les entrées du dossier
-      for await (const entry of this.currentDirectory.values()) {
+      files.forEach((file) => {
         const itemElement = document.createElement('div')
-        itemElement.className = `file-item ${entry.kind}`
-        itemElement.textContent = entry.name
+        itemElement.className = `file-item ${file.isDirectory ? 'directory' : 'file'}`
+        itemElement.textContent = file.name
 
-        if (entry.kind === 'directory') {
-          itemElement.addEventListener('click', () => this.openDirectory(entry))
+        if (file.isDirectory) {
+          itemElement.addEventListener('click', () =>
+            this.openDirectory(file.path),
+          )
         } else {
-          itemElement.addEventListener('click', () => this.openFile(entry))
+          itemElement.addEventListener('click', () => this.openFile(file.path))
         }
 
         this.fileListElement.appendChild(itemElement)
-      }
+      })
     } catch (error) {
-      console.error('Erreur lors de la liste des fichiers :', error)
-      this.fileListElement.innerHTML =
-        '<p style="color: var(--neon-pink);">Erreur : Impossible de lister les fichiers. / Error: Cannot list files.</p>'
+      console.error('Erreur:', error)
+      this.fileListElement.innerHTML = `
+                <p style="color: var(--neon-pink);">
+                    ❌ Erreur: Impossible de lister les fichiers. /
+                    Error: Cannot list files.
+                </p>
+            `
     }
   }
 
   /**
    * Ouvre un dossier.
-   * @param {FileSystemDirectoryHandle} directory - Le dossier à ouvrir.
+   * @param {string} path - Chemin du dossier.
    */
-  async openDirectory(directory) {
-    this.currentPath.push(directory.name)
-    this.currentDirectory = directory
-    await this.listFiles()
+  openDirectory(path) {
+    this.listFiles(path)
   }
 
   /**
    * Retourne au dossier parent.
    */
-  async goBack() {
-    if (this.currentPath.length > 0) {
-      this.currentPath.pop()
-      // Remonte d'un niveau (simplifié : on reliste le dossier parent)
-      // Note : L'API File System Access ne permet pas facilement de remonter,
-      // donc on réinitialise à la racine pour l'instant.
-      this.currentDirectory = await window.showDirectoryPicker()
-      await this.listFiles()
+  goBack() {
+    if (this.currentPath !== '.' && this.currentPath !== '/') {
+      // Utilise path.dirname pour remonter d'un niveau (simulé côté client)
+      const parentPath =
+        this.currentPath.split('/').slice(0, -1).join('/') || '/'
+      this.listFiles(parentPath)
     }
   }
 
   /**
    * Ouvre un fichier.
-   * @param {FileSystemFileHandle} file - Le fichier à ouvrir.
+   * @param {string} filePath - Chemin du fichier.
    */
-  async openFile(file) {
+  async openFile(filePath) {
     try {
-      const fileData = await file.getFile()
-      const content = await this.readFile(fileData)
+      const response = await fetch(
+        `/api/file?path=${encodeURIComponent(filePath)}`,
+      )
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`)
+      }
+      const data = await response.json()
 
-      // Affiche le contenu dans le viewer
       const viewer = document.getElementById('file-viewer')
       const viewerTitle = document.getElementById('viewer-title')
       const fileContent = document.getElementById('file-content')
 
-      viewerTitle.textContent = file.name
-      fileContent.textContent = content
+      viewerTitle.textContent = data.name
+      fileContent.textContent = data.content
 
       viewer.classList.remove('hidden')
     } catch (error) {
-      console.error("Erreur lors de l'ouverture du fichier :", error)
-      alert("Erreur lors de l'ouverture du fichier. / Error opening file.")
+      console.error('Erreur:', error)
+      alert(
+        `Erreur: Impossible d'ouvrir le fichier. / Error: Cannot open file.`,
+      )
     }
-  }
-
-  /**
-   * Lit le contenu d'un fichier.
-   * @param {File} file - Le fichier à lire.
-   * @returns {Promise<string>} - Contenu du fichier (texte).
-   */
-  async readFile(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result)
-      reader.onerror = () => reject(reader.error)
-      reader.readAsText(file)
-    })
   }
 
   /**
    * Met à jour l'affichage du chemin actuel.
    */
   updatePathDisplay() {
-    const path =
-      this.currentPath.length > 0 ? `/${this.currentPath.join('/')}` : '/'
-    this.currentPathElement.textContent = `Chemin actuel: ${path} / Current path: ${path}`
+    const displayPath = this.currentPath === '.' ? '/' : this.currentPath
+    this.currentPathElement.textContent = `Chemin actuel: ${displayPath} / Current path: ${displayPath}`
   }
 }
